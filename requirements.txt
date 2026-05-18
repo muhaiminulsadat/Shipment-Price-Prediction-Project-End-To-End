@@ -16,3 +16,4 @@ evidently
 catboost
 -e .
 ipykernel
+dotenv  

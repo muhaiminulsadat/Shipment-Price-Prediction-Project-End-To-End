@@ -4,8 +4,6 @@ import yaml
 from src.exception import shippingException
 from src.logger import logging
 
-
-
 class MainUtils:
 
     def read_yaml_file(self, filename: str) -> dict:
