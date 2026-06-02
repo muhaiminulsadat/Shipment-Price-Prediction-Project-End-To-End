@@ -13,7 +13,16 @@ from src.logger import logging
 class MongoDBOperation:
     def __init__(self):
         self.DB_URL = DB_URL
-        self.client = MongoClient(self.DB_URL)
+        self.client = (
+            MongoClient(
+                self.DB_URL,
+                serverSelectionTimeoutMS=2000,
+                connectTimeoutMS=2000,
+                socketTimeoutMS=2000,
+            )
+            if self.DB_URL
+            else None
+        )
         # print(self.client)
 
     def get_database(self, db_name) -> Database:
@@ -27,6 +36,8 @@ class MongoDBOperation:
         logging.info("Entered get_database method of MongoDB_Operation class")
 
         try:
+            if self.client is None:
+                raise ValueError("MongoDB URI is not configured")
             # Getting the DB
             db = self.client[db_name]
 
@@ -49,6 +60,8 @@ class MongoDBOperation:
             "Entered get_collection_as_dataframe method of MongoDB_Operation class"
         )
         try:
+            if self.client is None:
+                raise ValueError("MongoDB URI is not configured")
             # Getting the database
             database = self.get_database(db_name)
 

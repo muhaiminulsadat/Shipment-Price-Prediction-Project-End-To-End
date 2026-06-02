@@ -289,9 +289,9 @@ class DataValidation:
                 and drift is False
             ):
                 logging.info("Dataset schema validation completed")
-                drift_status == True
+                drift_status = True
             else:
-                drift_status == False
+                drift_status = False
 
             # Saving data validation artifacts
             data_validation_artifacts = DataValidationArtifacts(

@@ -1,5 +1,6 @@
 import sys
 import os
+import pandas as pd
 from src.logger import logging
 from pandas import DataFrame
 from sklearn.model_selection import train_test_split
@@ -18,19 +19,30 @@ class DataIngestion:
         self.data_ingestion_config = data_ingestion_config
         self.mongo_op = mongo_op
 
-    
-     # This method will fetch data from mongoDB
+    # This method will fetch data from mongoDB
     def get_data_from_mongodb(self) -> DataFrame:
-
         """
         Method Name :   get_data_from_mongodb
 
-        Description :   This method fetches data from MongoDB database. 
-        
-        Output      :   DataFrame 
+        Description :   This method fetches data from MongoDB database.
+
+        Output      :   DataFrame
         """
         logging.info("Entered get_data_from_mongodb method of Data_Ingestion class")
         try:
+            local_data_path = os.path.join(os.getcwd(), "data", "Shipment-data.csv")
+
+            if not self.mongo_op.DB_URL:
+                logging.info(
+                    "MongoDB URI is not configured; loading dataframe from local CSV"
+                )
+                df = pd.read_csv(local_data_path)
+                logging.info("Loaded dataframe from local CSV")
+                logging.info(
+                    "Exited the get_data_from_mongodb method of Data_Ingestion class"
+                )
+                return df
+
             logging.info("Getting the dataframe from mongodb")
 
             # Getting collection from MongoDB database
@@ -45,19 +57,20 @@ class DataIngestion:
             return df
 
         except Exception as e:
+            local_data_path = os.path.join(os.getcwd(), "data", "Shipment-data.csv")
+            if os.path.exists(local_data_path):
+                logging.info("MongoDB read failed; falling back to local CSV dataset")
+                return pd.read_csv(local_data_path)
             raise shippingException(e, sys) from e
-        
 
-    
-     # This method will split the data
+    # This method will split the data
     def split_data_as_train_test(self, df: DataFrame) -> Tuple[DataFrame, DataFrame]:
-
         """
         Method Name :   split_data_as_train_test
 
         Description :   This method splits the dataframe into train set and test set based on split ratio.
-        
-        Output      :  Train DataFrame and Test DataFrame 
+
+        Output      :  Train DataFrame and Test DataFrame
         """
         logging.info("Entered split_data_as_train_test method of Data_Ingestion class")
         try:
@@ -111,19 +124,15 @@ class DataIngestion:
 
         except Exception as e:
             raise shippingException(e, sys) from e
-        
-    
 
-
-     # This method initiates data ingestion
+    # This method initiates data ingestion
     def initiate_data_ingestion(self) -> DataIngestionArtifacts:
-
         """
         Method Name :   initiate_data_ingestion
 
         Description :   This method initiates data ingestion.
-        
-        Output      :   Data ingestion artifact 
+
+        Output      :   Data ingestion artifact
         """
         logging.info("Entered initiate_data_ingestion method of Data_Ingestion class")
         try:
@@ -137,7 +146,9 @@ class DataIngestion:
 
             # Splitting the data as train set and test set
             self.split_data_as_train_test(df1)
-            logging.info("Exited initiate_data_ingestion method of Data_Ingestion class")
+            logging.info(
+                "Exited initiate_data_ingestion method of Data_Ingestion class"
+            )
 
             # Saving data ingestion artifacts
             data_ingestion_artifacts = DataIngestionArtifacts(

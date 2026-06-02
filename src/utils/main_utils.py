@@ -1,8 +1,12 @@
+import os
+import pickle
 import sys
+import dill
 import numpy as np
 import yaml
 from src.exception import shippingException
 from src.logger import logging
+
 
 class MainUtils:
 
@@ -14,7 +18,6 @@ class MainUtils:
 
         except Exception as e:
             raise shippingException(e, sys) from e
-        
 
     def write_json_to_yaml_file(self, json_file: dict, yaml_file_path: str) -> yaml:
         logging.info("Entered the write_json_to_yaml_file method of MainUtils class")
@@ -25,7 +28,6 @@ class MainUtils:
 
         except Exception as e:
             raise shippingException(e, sys) from e
-        
 
     def save_numpy_array_data(self, file_path: str, array: np.array):
         logging.info("Entered the save_numpy_array_data method of MainUtils class")
@@ -37,8 +39,29 @@ class MainUtils:
 
         except Exception as e:
             raise shippingException(e, sys) from e
-        
-        
+
+    @staticmethod
+    def save_object(file_path: str, obj: object) -> None:
+        logging.info("Entered the save_object method of MainUtils class")
+        try:
+            with open(file_path, "wb") as file_obj:
+                dill.dump(obj, file_obj)
+
+            logging.info("Exited the save_object method of MainUtils class")
+
+            return file_path
+
+        except Exception as e:
+            raise shippingException(e, sys) from e
+
+    def load_object(self, file_path: str) -> object:
+        logging.info("Entered the load_object method of MainUtils class")
+        try:
+            with open(file_path, "rb") as file_obj:
+                return pickle.load(file_obj)
+
+        except Exception as e:
+            raise shippingException(e, sys) from e
 
     def load_numpy_array_data(self, file_path: str) -> np.array:
         logging.info("Entered the load_numpy_array_data method of MainUtils class")
