@@ -4,7 +4,6 @@ from src.constants import *
 from dataclasses import dataclass
 
 
-
 @dataclass
 class DataIngestionConfig:
     def __init__(self):
@@ -30,23 +29,21 @@ class DataIngestionConfig:
         )
 
 
-
 @dataclass
 class DataValidationConfig:
     def __init__(self):
         self.UTILS = MainUtils()
         self.SCHEMA_CONFIG = self.UTILS.read_yaml_file(filename=SCHEMA_FILE_PATH)
         self.DATA_INGESTION_ARTIFCATS_DIR: str = os.path.join(
-             os.getcwd(), ARTIFACTS_DIR, DATA_INGESTION_ARTIFACTS_DIR
+            os.getcwd(), ARTIFACTS_DIR, DATA_INGESTION_ARTIFACTS_DIR
         )
         self.DATA_VALIDATION_ARTIFACTS_DIR: str = os.path.join(
-             os.getcwd(), ARTIFACTS_DIR, DATA_VALIDATION_ARTIFACT_DIR
+            os.getcwd(), ARTIFACTS_DIR, DATA_VALIDATION_ARTIFACT_DIR
         )
         self.DATA_DRIFT_FILE_PATH: str = os.path.join(
             self.DATA_VALIDATION_ARTIFACTS_DIR, DATA_DRIFT_FILE_NAME
         )
 
-        
 
 @dataclass
 class DataTransformationConfig:
@@ -76,4 +73,22 @@ class DataTransformationConfig:
             ARTIFACTS_DIR,
             DATA_TRANSFORMATION_ARTIFCATS_DIR,
             PREPROCESSOR_OBJECT_FILE_NAME,
+        )
+
+
+@dataclass
+class ModelTrainerConfig:
+    def __init__(self):
+        self.UTILS = MainUtils()
+        self.DATA_TRANSFORMATION_ARTIFACTS_DIR: str = os.path.join(
+            os.getcwd(), ARTIFACTS_DIR, DATA_TRANSFORMATION_ARTIFCATS_DIR
+        )
+        self.MODEL_TRAINER_ARTIFACTS_DIR: str = os.path.join(
+            os.getcwd(), ARTIFACTS_DIR, MODEL_TRAINER_ARTIFACTS_DIR
+        )
+        self.PREPROCESSOR_OBJECT_FILE_PATH: str = os.path.join(
+            self.DATA_TRANSFORMATION_ARTIFACTS_DIR, PREPROCESSOR_OBJECT_FILE_NAME
+        )
+        self.TRAINED_MODEL_FILE_PATH: str = os.path.join(
+            os.getcwd(), ARTIFACTS_DIR, MODEL_TRAINER_ARTIFACTS_DIR, MODEL_FILE_NAME
         )
